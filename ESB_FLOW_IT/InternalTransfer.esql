@@ -1,0 +1,139 @@
+
+/* NAME : Request To T24.
+DESCRIPTION : Requesting the T24 by hitting the request with certain fields.
+DATE CREATED : 03/01/2020
+AUTHOR : G Raghavender Yadav
+DATE MODIFIED : */
+-------------------------------------------------------------------------------------------------------------------------
+
+DECLARE CONFIG_FILE_NAME EXTERNAL CHARACTER '';
+CREATE COMPUTE MODULE RequestToT24
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		-- CALL CopyMessageHeaders();
+		CALL CopyEntireMessage();
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		-- DECLARE init,rc BOOLEAN;
+		-- CALL initLog4j(CONFIG_FILE_NAME) INTO init;
+		-- CALL writeToLogFile(MessageFlowLabel,'ESB_FLOW_IT','INFO','*************START_OF_SOAP Webservice**********')into rc;
+		-- --Logging input request into file system
+		-- DECLARE inputReq CHARACTER CAST(ASBITSTREAM(InputRoot.XMLNSC) AS CHARACTER CCSID InputRoot.Properties.CodedCharSetId ENCODING InputRoot.Properties.Encoding);
+		-- CALL writeToLogFile(MessageFlowLabel,'ESB_FLOW_IT','INFO',inputReq) into rc;
+		--
+		-- CALL writeToLogFile(MessageFlowLabel,'ESB_FLOW_IT','INFO','*************LOGGED REQUEST SUCCESSFULLY**********')into rc;
+		-- CALL writeToLogFile(MessageFlowLabel,'ESB_FLOW_IT','INFO','*************SENDING REQUEST TO PROVIDER FLOW**********')into rc;
+
+		CREATE LASTCHILD OF OutputRoot DOMAIN 'JSON';
+		CREATE LASTCHILD OF OutputRoot.JSON NAME 'Data';
+		--CREATE LASTCHILD OF OutputRoot.JSON.Data NAME 'ESBServices';
+		CREATE LASTCHILD OF OutputRoot.JSON.Data NAME 'STBREQHEADER';
+		DECLARE Oref REFERENCE TO OutputRoot.JSON.Data.STBREQHEADER;
+
+		CREATE LASTCHILD OF Oref TYPE NameValue NAME 'SrcAppType' VALUE InputRoot.XMLNSC.ESBServices.STBREQHEADER.SrcAppType;
+
+		DECLARE Iref REFERENCE TO InputRoot.XMLNSC.ESBServices.STBREQHEADER;
+		CREATE LASTCHILD OF Oref TYPE NameValue NAME 'SrcAppId' VALUE Iref.SrcAppId;
+		CREATE LASTCHILD OF Oref TYPE NameValue NAME 'SrcMsgId' VALUE Iref.SrcMsgId;
+		CREATE LASTCHILD OF Oref TYPE NameValue NAME 'SrcAppTimestamp' VALUE Iref.SrcAppTimestamp;
+		CREATE LASTCHILD OF Oref TYPE NameValue NAME 'SrvCode' VALUE Iref.SrvCode;
+		CREATE LASTCHILD OF Oref TYPE NameValue NAME 'SrvName' VALUE Iref.SrvName;
+		CREATE LASTCHILD OF Oref TYPE NameValue NAME 'TargetApp' VALUE Iref.TargetApp;
+		------------------------------------------Body------------------------------------------------------------
+		CREATE LASTCHILD OF OutputRoot.JSON.Data NAME 'STBREQBODY';
+		CREATE LASTCHILD OF OutputRoot.JSON.Data.STBREQBODY NAME 'InternalTransferRequest';
+		DECLARE Ouref REFERENCE TO OutputRoot.JSON.Data.STBREQBODY.InternalTransferRequest;
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'fromAccount' VALUE InputRoot.XMLNSC.ESBServices.STBREQBODY.InternalTransferReq.FromAccount;
+
+		DECLARE Inref REFERENCE TO InputRoot.XMLNSC.ESBServices.STBREQBODY.InternalTransferReq;
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'transferType' VALUE Inref.TransferType;
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'beneficiaryName' VALUE Inref.BeneficiaryName;
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'beneficiaryAccNo' VALUE Inref.BeneficiaryAccountNumber;
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'amount' VALUE Inref.Amount;
+	END;
+END MODULE;
+-- CREATE FUNCTION initLog4j( IN CONFIG_FILE_NAME CHARACTER )
+--RETURNS BOOLEAN
+--LANGUAGE JAVA
+--EXTERNAL NAME "com.ibm.broker.IAM3.Log4jNode.initLog4j";
+--
+--
+--CREATE FUNCTION writeToLogFile( IN COMPONENT_NAME CHARACTER,
+--IN LOGGER_NAME CHARACTER,
+--IN LEVEL CHARACTER,
+--IN TEXT CHARACTER )
+--RETURNS BOOLEAN
+--LANGUAGE JAVA
+--EXTERNAL NAME "com.ibm.broker.IAM3.Log4jNode.log";
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+/* NAME : Response from T24.
+DESCRIPTION : The response from T24 which shows the details and status of the transaction.
+DATE CREATED : 03/01/2020
+AUTHOR : G Raghavender Yadav
+DATE MODIFIED :
+AUTHOR : */
+-------------------------------------------------------------------------------------------------------------------------
+CREATE COMPUTE MODULE ResponseFromT24
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		-- CALL CopyMessageHeaders();
+		CALL CopyEntireMessage();
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+
+		CREATE LASTCHILD OF OutputRoot DOMAIN 'XMLNSC';
+		CREATE LASTCHILD OF OutputRoot.XMLNSC NAME 'ESBServices';
+		CREATE LASTCHILD OF OutputRoot.XMLNSC.ESBServices NAME 'STBREQHEADER';
+		DECLARE Oref REFERENCE TO OutputRoot.XMLNSC.ESBServices.STBREQHEADER;
+
+		CREATE LASTCHILD OF Oref TYPE NameValue NAME 'SrcAppType' VALUE InputRoot.JSON.Data.STBREQHEADER.SrcAppType;
+
+		DECLARE Iref REFERENCE TO InputRoot.JSON.Data.STBREQHEADER;
+		CREATE LASTCHILD OF Oref TYPE NameValue NAME 'SrcAppId' VALUE Iref.SrcAppId;
+		CREATE LASTCHILD OF Oref TYPE NameValue NAME 'SrcMsgId' VALUE Iref.SrcMsgId;
+		CREATE LASTCHILD OF Oref TYPE NameValue NAME 'SrcAppTimestamp' VALUE Iref.SrcAppTimestamp;
+		CREATE LASTCHILD OF Oref TYPE NameValue NAME 'SrvCode' VALUE Iref.SrvCode;
+		CREATE LASTCHILD OF Oref TYPE NameValue NAME 'SrvName' VALUE Iref.SrvName;
+		--CREATE LASTCHILD OF Oref TYPE NameValue NAME 'TargetApp' VALUE Iref.TargetApp;
+		------------------------------------------Body------------------------------------------------------------
+
+		CREATE LASTCHILD OF OutputRoot.XMLNSC.ESBServices NAME 'STBRESBODY';
+		CREATE LASTCHILD OF OutputRoot.XMLNSC.ESBServices.STBRESBODY NAME 'InternalTransferResponse';
+		DECLARE Ouref REFERENCE TO OutputRoot.XMLNSC.ESBServices.STBRESBODY.InternalTransferResponse;
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'toAccount' VALUE InputRoot.JSON.Data.STBRESBODY.InternalTransferResponse.toAccount;
+		-- CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'toAccount' VALUE '111241';
+		DECLARE Inref REFERENCE TO InputRoot.JSON.Data.STBRESBODY.InternalTransferResponse;
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'description' VALUE Inref.description;
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'referenceNo' VALUE Inref.referenceNo;
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'amount' VALUE Inref.amount;
+		-- CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'amount' VALUE '1020';
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'status' VALUE Inref.status;
+
+
+	END;
+END MODULE;  
