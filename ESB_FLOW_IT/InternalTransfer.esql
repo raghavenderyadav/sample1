@@ -1,8 +1,9 @@
 
-/* NAME : Request To T24.
-DESCRIPTION : Requesting the T24 by hitting the request with certain fields.
-DATE CREATED : 31/01/2020
-AUTHOR : G Raghavender Yadav
+/* 
+NAME		  : Request To T24.
+DESCRIPTION   : Requesting the T24 by hitting the request with certain fields.
+DATE CREATED  : 31/01/2020
+AUTHOR 		  : G Raghavender Yadav
 DATE MODIFIED : 03/02/2020 */
 -------------------------------------------------------------------------------------------------------------------------
 
