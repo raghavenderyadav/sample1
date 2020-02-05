@@ -1,10 +1,11 @@
 
 /* 
-NAME		  : Request To T24.
+NAME	      : Request To T24.
 DESCRIPTION   : Requesting the T24 by hitting the request with certain fields.
 DATE CREATED  : 31/01/2020
-AUTHOR 		  : G Raghavender Yadav
-DATE MODIFIED : 03/02/2020 */
+AUTHOR 	      : G Raghavender Yadav
+DATE MODIFIED : 04/02/2020 
+*/
 -------------------------------------------------------------------------------------------------------------------------
 
 DECLARE CONFIG_FILE_NAME EXTERNAL CHARACTER '';
@@ -59,12 +60,14 @@ END MODULE;
 
 --------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------
-/* NAME : Response from T24.
-DESCRIPTION : The response from T24 which shows the details and status of the transaction.
-DATE CREATED : 31/01/2020
-AUTHOR : G Raghavender Yadav
+/* 
+NAME          : Response from T24.
+DESCRIPTION   : The response from T24 which shows the details and status of the transaction.
+DATE CREATED  : 31/01/2020
+AUTHOR        : G Raghavender Yadav
 DATE MODIFIED :
-AUTHOR : 03/02/2020*/
+AUTHOR        : 04/02/2020 
+*/
 -------------------------------------------------------------------------------------------------------------------------
 CREATE COMPUTE MODULE ResponseFromT24
 	CREATE FUNCTION Main() RETURNS BOOLEAN
