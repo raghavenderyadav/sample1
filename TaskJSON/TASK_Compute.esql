@@ -17,7 +17,6 @@ CREATE COMPUTE MODULE TASK_Compute
 	END;
 
 	CREATE PROCEDURE CopyEntireMessage() BEGIN
-
 		SET OutputRoot.JSON.Data.generics_name='R58';
 		SET OutputRoot.JSON.Data.generics_apps_flow='flow2';
 

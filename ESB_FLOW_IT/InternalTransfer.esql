@@ -58,15 +58,14 @@ CREATE COMPUTE MODULE RequestToT24
 	END;
 END MODULE;
 
---------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------- 
+-------------------------------------------------------------------------------------------------------------------------
 /* 
 NAME          : Response from T24.
 DESCRIPTION   : The response from T24 which shows the details and status of the transaction.
 DATE CREATED  : 31/01/2020
 AUTHOR        : G Raghavender Yadav
-DATE MODIFIED :
-AUTHOR        : 04/02/2020 
+DATE MODIFIED : 04/02/2020 
 */
 -------------------------------------------------------------------------------------------------------------------------
 CREATE COMPUTE MODULE ResponseFromT24
@@ -108,14 +107,14 @@ CREATE COMPUTE MODULE ResponseFromT24
 		CREATE LASTCHILD OF OutputRoot.XMLNSC.ESBServices NAME 'STBRESBODY';
 		CREATE LASTCHILD OF OutputRoot.XMLNSC.ESBServices.STBRESBODY NAME 'InternalTransferResponse';
 		DECLARE Ouref REFERENCE TO OutputRoot.XMLNSC.ESBServices.STBRESBODY.InternalTransferResponse;
-		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'toAccount' VALUE InputRoot.JSON.Data.STBRESBODY.InternalTransferResponse.toAccount;
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'ToAccount' VALUE InputRoot.JSON.Data.STBRESBODY.InternalTransferResponse.toAccount;
 		-- CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'toAccount' VALUE '111241';
 		DECLARE Inref REFERENCE TO InputRoot.JSON.Data.STBRESBODY.InternalTransferResponse;
-		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'description' VALUE Inref.description;
-		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'referenceNo' VALUE Inref.referenceNo;
-		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'amount' VALUE Inref.amount;
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'Description' VALUE Inref.description;
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'ReferenceNumber' VALUE Inref.referenceNo;
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'Amount' VALUE Inref.amount; 
 		-- CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'amount' VALUE '1020';
-		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'status' VALUE Inref.status;
+		CREATE LASTCHILD OF Ouref TYPE NameValue NAME 'Status' VALUE Inref.status;  
 
 
 	END;
